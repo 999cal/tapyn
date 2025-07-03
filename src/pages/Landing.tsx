@@ -6,10 +6,14 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase'; // your supabase client
+import { useEffect } from "react";
 
 const Landing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
+    useEffect(() => {
+    document.title = "Tapyn | Welcome";
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
