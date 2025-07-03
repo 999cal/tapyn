@@ -118,7 +118,7 @@ const Landing = () => {
         {/* Hero Section */}
         <div className="mb-12">
           <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-            Glyph Canvas
+            tapyn
           </h1>
           <p className="text-xl md:text-2xl text-purple-200/90 mb-8 max-w-2xl mx-auto leading-relaxed">
             Create your ultimate digital identity. Customize your profile with stunning visuals, 
