@@ -173,7 +173,7 @@ const Landing = () => {
                     value={signupData.username}
                     onChange={(e) => setSignupData({ ...signupData, username: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
-                    placeholder="Unique username"
+                    placeholder="tapyn.wtf/ "
                   />
                 </div>
                 <div>
