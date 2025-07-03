@@ -1,6 +1,6 @@
-
 import { ProfileData } from '@/pages/Index';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface BadgesSectionProps {
   profileData: ProfileData;
