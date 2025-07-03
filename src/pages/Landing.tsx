@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,50 +5,111 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase'; // your supabase client
 
 const Landing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [signupData, setSignupData] = useState({ email: '', password: '', confirmPassword: '' });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [signupData, setSignupData] = useState({ email: '', password: '', confirmPassword: '', username: '' });
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple validation for demo purposes
-    if (loginData.email && loginData.password) {
-      toast({
-        title: "Login Successful!",
-        description: "Welcome back to your profile editor.",
-      });
-      setIsLoginOpen(false);
-      navigate('/editor');
-    } else {
+
+    const { email, password } = loginData;
+
+    if (!email || !password) {
       toast({
         title: "Login Failed",
-        description: "Please enter valid credentials.",
+        description: "Please enter both email and password.",
         variant: "destructive",
       });
+      return;
     }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Login Successful!",
+      description: "Welcome back to your profile editor.",
+    });
+
+    setIsLoginOpen(false);
+    navigate('/editor');
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (signupData.email && signupData.password && signupData.password === signupData.confirmPassword) {
-      toast({
-        title: "Account Created!",
-        description: "Welcome to your new profile editor.",
-      });
-      setIsSignupOpen(false);
-      navigate('/editor');
-    } else {
+
+    const { email, password, confirmPassword, username } = signupData;
+
+    if (!email || !password || password !== confirmPassword || !username) {
       toast({
         title: "Signup Failed",
-        description: "Please check your information and try again.",
+        description: "Please fill all fields correctly.",
         variant: "destructive",
       });
+      return;
     }
+
+    // Check if username is unique
+    const { data: existingUser, error: usernameError } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .single();
+
+    if (existingUser) {
+      toast({
+        title: "Signup Failed",
+        description: "Username is already taken.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Sign up the user
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      toast({
+        title: "Signup Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Insert profile row with username and email
+    await supabase.from('profiles').insert({
+      id: data.user?.id,
+      username,
+      email,
+      avatar_url: '', // default empty or null
+      bio: '',
+      links: [],
+    });
+
+    toast({
+      title: "Account Created!",
+      description: "Please check your email to confirm your account.",
+    });
+
+    setIsSignupOpen(false);
+    navigate('/editor');
   };
 
   return (
@@ -106,12 +166,23 @@ const Landing = () => {
               </DialogHeader>
               <form onSubmit={handleSignup} className="space-y-4">
                 <div>
+                  <Label htmlFor="signup-username" className="text-purple-200">Username</Label>
+                  <Input
+                    id="signup-username"
+                    type="text"
+                    value={signupData.username}
+                    onChange={(e) => setSignupData({ ...signupData, username: e.target.value })}
+                    className="bg-purple-900/30 border-purple-500/30 text-white"
+                    placeholder="Unique username"
+                  />
+                </div>
+                <div>
                   <Label htmlFor="signup-email" className="text-purple-200">Email</Label>
                   <Input
                     id="signup-email"
                     type="email"
                     value={signupData.email}
-                    onChange={(e) => setSignupData({...signupData, email: e.target.value})}
+                    onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
                     placeholder="your@email.com"
                   />
@@ -122,27 +193,24 @@ const Landing = () => {
                     id="signup-password"
                     type="password"
                     value={signupData.password}
-                    onChange={(e) => setSignupData({...signupData, password: e.target.value})}
+                    onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
                     placeholder="••••••••"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="signup-confirm" className="text-purple-200">Confirm Password</Label>
+                  <Label htmlFor="signup-confirm-password" className="text-purple-200">Confirm Password</Label>
                   <Input
-                    id="signup-confirm"
+                    id="signup-confirm-password"
                     type="password"
                     value={signupData.confirmPassword}
-                    onChange={(e) => setSignupData({...signupData, confirmPassword: e.target.value})}
+                    onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
                     placeholder="••••••••"
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                >
-                  Create Account
+                <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold">
+                  Sign Up
                 </Button>
               </form>
             </DialogContent>
@@ -150,18 +218,18 @@ const Landing = () => {
 
           <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
             <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-purple-500/50 text-purple-300 hover:bg-purple-600/20 hover:border-purple-400 px-8 py-3 text-lg font-semibold transition-all duration-300"
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-purple-300 border-purple-500/50 hover:border-purple-400/70"
               >
-                Sign In
+                Login
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-black/90 border-purple-500/30 text-white">
               <DialogHeader>
                 <DialogTitle className="text-2xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Welcome Back
+                  Login to Your Account
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleLogin} className="space-y-4">
@@ -171,7 +239,7 @@ const Landing = () => {
                     id="login-email"
                     type="email"
                     value={loginData.email}
-                    onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
                     placeholder="your@email.com"
                   />
@@ -182,25 +250,17 @@ const Landing = () => {
                     id="login-password"
                     type="password"
                     value={loginData.password}
-                    onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     className="bg-purple-900/30 border-purple-500/30 text-white"
                     placeholder="••••••••"
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                >
-                  Sign In
+                <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold">
+                  Login
                 </Button>
               </form>
             </DialogContent>
           </Dialog>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 text-purple-300/60 text-sm">
-          <p>Join thousands of creators building their digital identity</p>
         </div>
       </div>
     </div>
