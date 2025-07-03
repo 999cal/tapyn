@@ -12,8 +12,10 @@ const Landing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-    useEffect(() => {
-    document.title = "Tapyn | Welcome";
+useEffect(() => {
+  document.title = "Tapyn | Welcome";
+}, []);
+
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
