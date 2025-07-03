@@ -1,4 +1,4 @@
-import { useState } from 'react';
+roimport { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,7 +125,7 @@ const Landing = () => {
             tapyn
           </h1>
           <p className="text-xl md:text-2xl text-purple-200/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Create your ultimate digital identity. Customize your profile with stunning visuals, 
+            Create your epic digital identity. Customize your profile with stunning visuals, 
             showcase your achievements, and connect all your social links in one beautiful place.
           </p>
         </div>
