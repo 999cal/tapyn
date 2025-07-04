@@ -16,12 +16,7 @@ export interface Profile {
   badges?: any; // Changed from string[] to any to match Json type
   font_style?: string;
   special_effects?: any; // Changed from string[] to any to match Json type
-  social_links?: Array<{
-    id: string;
-    platform: string;
-    url: string;
-    label: string;
-  }>;
+  social_links?: any; // Changed to any to match Json type
 }
 
 export const useProfile = () => {
