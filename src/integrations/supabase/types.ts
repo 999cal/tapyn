@@ -12,28 +12,52 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          background_music_url: string | null
+          background_video_url: string | null
+          badges: Json | null
           bio: string | null
           email: string
+          font_style: string | null
           id: string
           links: Json | null
+          profile_effect: string | null
+          profile_picture_url: string | null
+          social_links: Json | null
+          special_effects: Json | null
           updated_at: string | null
           username: string
         }
         Insert: {
           avatar_url?: string | null
+          background_music_url?: string | null
+          background_video_url?: string | null
+          badges?: Json | null
           bio?: string | null
           email: string
+          font_style?: string | null
           id: string
           links?: Json | null
+          profile_effect?: string | null
+          profile_picture_url?: string | null
+          social_links?: Json | null
+          special_effects?: Json | null
           updated_at?: string | null
           username: string
         }
         Update: {
           avatar_url?: string | null
+          background_music_url?: string | null
+          background_video_url?: string | null
+          badges?: Json | null
           bio?: string | null
           email?: string
+          font_style?: string | null
           id?: string
           links?: Json | null
+          profile_effect?: string | null
+          profile_picture_url?: string | null
+          social_links?: Json | null
+          special_effects?: Json | null
           updated_at?: string | null
           username?: string
         }

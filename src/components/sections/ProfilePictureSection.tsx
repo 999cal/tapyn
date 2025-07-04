@@ -4,6 +4,9 @@ import { Upload, Image } from 'lucide-react';
 import { ProfileData } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { uploadFile } from '@/utils/fileUpload';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProfilePictureSectionProps {
   profileData: ProfileData;
@@ -19,13 +22,42 @@ const effects = [
 
 export const ProfilePictureSection = ({ profileData, updateProfileData }: ProfilePictureSectionProps) => {
   const [dragActive, setDragActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const handleFileUpload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      updateProfileData({ profilePicture: e.target?.result as string });
-    };
-    reader.readAsDataURL(file);
+  const handleFileUpload = async (file: File) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Please log in to upload files",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const url = await uploadFile(file, 'profile-pictures', user.id);
+      if (url) {
+        updateProfileData({ profilePicture: url });
+        toast({
+          title: "Success",
+          description: "Profile picture uploaded successfully",
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload profile picture",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -72,7 +104,7 @@ export const ProfilePictureSection = ({ profileData, updateProfileData }: Profil
             
             <div>
               <p className="text-white font-medium mb-2">
-                Drag & drop your image here, or click to browse
+                {uploading ? 'Uploading...' : 'Drag & drop your image here, or click to browse'}
               </p>
               <p className="text-purple-200/60 text-sm">
                 Supports PNG, JPG, GIF up to 10MB
@@ -82,11 +114,12 @@ export const ProfilePictureSection = ({ profileData, updateProfileData }: Profil
             <label htmlFor="profile-upload">
               <Button
                 asChild
+                disabled={uploading}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
               >
                 <span className="cursor-pointer">
                   <Image className="w-4 h-4 mr-2" />
-                  Choose File
+                  {uploading ? 'Uploading...' : 'Choose File'}
                 </span>
               </Button>
             </label>
@@ -97,6 +130,7 @@ export const ProfilePictureSection = ({ profileData, updateProfileData }: Profil
               accept="image/*"
               className="hidden"
               onChange={handleFileInput}
+              disabled={uploading}
             />
           </div>
         </div>

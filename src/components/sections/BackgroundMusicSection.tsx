@@ -5,6 +5,9 @@ import { ProfileData } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { uploadFile } from '@/utils/fileUpload';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface BackgroundMusicSectionProps {
   profileData: ProfileData;
@@ -14,10 +17,42 @@ interface BackgroundMusicSectionProps {
 export const BackgroundMusicSection = ({ profileData, updateProfileData }: BackgroundMusicSectionProps) => {
   const [dragActive, setDragActive] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const handleFileUpload = (file: File) => {
-    const url = URL.createObjectURL(file);
-    updateProfileData({ backgroundMusic: url });
+  const handleFileUpload = async (file: File) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Please log in to upload files",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const url = await uploadFile(file, 'background-music', user.id);
+      if (url) {
+        updateProfileData({ backgroundMusic: url });
+        toast({
+          title: "Success",
+          description: "Background music uploaded successfully",
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload background music",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -78,7 +113,7 @@ export const BackgroundMusicSection = ({ profileData, updateProfileData }: Backg
             
             <div>
               <p className="text-white font-medium mb-2">
-                Drag & drop your audio file here, or click to browse
+                {uploading ? 'Uploading...' : 'Drag & drop your audio file here, or click to browse'}
               </p>
               <p className="text-purple-200/60 text-sm">
                 Supports MP3, WAV, OGG up to 20MB
@@ -88,11 +123,12 @@ export const BackgroundMusicSection = ({ profileData, updateProfileData }: Backg
             <label htmlFor="audio-upload">
               <Button
                 asChild
+                disabled={uploading}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
               >
                 <span className="cursor-pointer">
                   <Upload className="w-4 h-4 mr-2" />
-                  Choose Audio
+                  {uploading ? 'Uploading...' : 'Choose Audio'}
                 </span>
               </Button>
             </label>
@@ -103,6 +139,7 @@ export const BackgroundMusicSection = ({ profileData, updateProfileData }: Backg
               accept="audio/*"
               className="hidden"
               onChange={handleFileInput}
+              disabled={uploading}
             />
           </div>
         </div>
