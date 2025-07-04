@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Save, ExternalLink } from 'lucide-react';
 
 export interface ProfileData {
   profilePicture: string | null;
@@ -43,6 +43,7 @@ const Index = () => {
     specialEffects: [],
     socialLinks: []
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   const { user, signOut } = useAuth();
   const { profile, updateProfile } = useProfile();
@@ -81,6 +82,65 @@ const Index = () => {
 
     if (Object.keys(dbUpdates).length > 0) {
       await updateProfile(dbUpdates);
+    }
+  };
+
+  const handleSaveAndPublish = async () => {
+    if (!profile?.username) {
+      toast({
+        title: "Error",
+        description: "Username not found. Please try refreshing the page.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    
+    try {
+      // Save all current profile data
+      const dbUpdates = {
+        profile_picture_url: profileData.profilePicture,
+        profile_effect: profileData.profileEffect,
+        background_video_url: profileData.backgroundVideo,
+        background_music_url: profileData.backgroundMusic,
+        badges: profileData.badges,
+        font_style: profileData.fontStyle,
+        special_effects: profileData.specialEffects,
+        social_links: profileData.socialLinks
+      };
+
+      await updateProfile(dbUpdates);
+
+      // Show success message with profile URL
+      const profileUrl = `https://tapyn.netlify.app/${profile.username}`;
+      
+      toast({
+        title: "Profile Published! 🎉",
+        description: (
+          <div className="flex items-center gap-2">
+            <span>Your profile is live at:</span>
+            <a 
+              href={profileUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 underline flex items-center gap-1"
+            >
+              {profileUrl}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        ),
+      });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save and publish profile. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -162,9 +222,15 @@ const Index = () => {
                   {profile?.username && (
                     <div className="text-right">
                       <p className="text-white text-sm">Your profile:</p>
-                      <p className="text-purple-400 font-medium">
+                      <a 
+                        href={`https://tapyn.netlify.app/${profile.username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-purple-400 font-medium hover:text-purple-300 transition-colors flex items-center gap-1"
+                      >
                         tapyn.netlify.app/{profile.username}
-                      </p>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
                     </div>
                   )}
                   
@@ -186,6 +252,27 @@ const Index = () => {
               </div>
               
               {renderSection()}
+
+              {/* Save & Publish Button */}
+              <div className="mt-8 pt-6 border-t border-purple-500/20 flex justify-center">
+                <Button
+                  onClick={handleSaveAndPublish}
+                  disabled={isSaving}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-5 h-5 mr-2" />
+                      Save & Publish Profile
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
