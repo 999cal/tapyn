@@ -13,9 +13,9 @@ export interface Profile {
   background_video_url?: string;
   background_music_url?: string;
   profile_effect?: string;
-  badges?: string[];
+  badges?: any; // Changed from string[] to any to match Json type
   font_style?: string;
-  special_effects?: string[];
+  special_effects?: any; // Changed from string[] to any to match Json type
   social_links?: Array<{
     id: string;
     platform: string;
