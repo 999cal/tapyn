@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { AuthModal } from '@/components/AuthModal';
 import { useAuth } from '@/hooks/useAuth';
+import { Music, Gamepad2, Users, ExternalLink, Twitter, Mail } from 'lucide-react';
 
 const Landing = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -24,28 +25,73 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-purple-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-600 rounded-lg flex items-center justify-center">
+              <Music className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-600 to-blue-700 bg-clip-text text-transparent">
+              Playd
+            </h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {user ? (
+              <Button 
+                onClick={() => navigate('/editor')}
+                className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-full px-6"
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setAuthModalOpen(true)}
+                  className="text-slate-600 hover:text-sky-600"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-full px-6"
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Create Your Digital Identity
+          <h1 className="text-6xl font-bold text-slate-800 mb-6">
+            Your Gaming & Music
+            <span className="block bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+              Profile, Perfected
+            </span>
           </h1>
-          <p className="text-xl text-purple-200/80 mb-8 max-w-2xl mx-auto">
-            Build a stunning profile page that showcases your personality. Share your story, connect with others, and make a lasting impression.
+          <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Create stunning public profiles that showcase your favorite music, gaming achievements, 
+            and social connections. Perfect for gamers, Discord users, and music enthusiasts.
           </p>
           <div className="flex gap-4 justify-center">
             <Button 
               onClick={handleGetStarted}
               size="lg" 
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg"
+              className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              {user ? 'Go to Editor' : 'Get Started'}
+              {user ? 'Go to Dashboard' : 'Create Your Profile'}
             </Button>
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-purple-400/30 text-purple-200 hover:bg-purple-500/20 px-8 py-4 text-lg"
+              className="border-sky-200 text-sky-700 hover:bg-sky-50 px-8 py-4 text-lg rounded-full"
             >
               View Examples
             </Button>
@@ -53,70 +99,134 @@ const Landing = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-black/30 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">🎨</span>
+        <div className="grid md:grid-cols-3 gap-8 mb-20">
+          <div className="bg-white rounded-2xl border border-blue-100 p-8 text-center shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-16 h-16 bg-gradient-to-br from-sky-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="w-8 h-8 text-sky-600" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Customizable Design</h3>
-            <p className="text-purple-200/80">
-              Choose from multiple themes, effects, and layouts to create a profile that truly represents you.
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Music Integration</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Connect Spotify and Last.fm to showcase your top artists, tracks, and listening stats. 
+              Let visitors hear what you're currently playing.
             </p>
           </div>
 
-          <div className="bg-black/30 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">🎵</span>
+          <div className="bg-white rounded-2xl border border-blue-100 p-8 text-center shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-16 h-16 bg-gradient-to-br from-sky-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Gamepad2 className="w-8 h-8 text-sky-600" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Rich Media</h3>
-            <p className="text-purple-200/80">
-              Add background music, videos, and stunning visual effects to make your profile come alive.
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Gaming Profiles</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Link your Discord, Steam, PSN, Xbox, and Riot accounts. Show off your achievements 
+              and connect with fellow gamers.
             </p>
           </div>
 
-          <div className="bg-black/30 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">🔗</span>
+          <div className="bg-white rounded-2xl border border-blue-100 p-8 text-center shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-16 h-16 bg-gradient-to-br from-sky-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Users className="w-8 h-8 text-sky-600" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">Easy Sharing</h3>
-            <p className="text-purple-200/80">
-              Get your unique URL and share your profile across all social media platforms instantly.
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Social Hub</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Create a central hub for all your social media, streaming platforms, and gaming profiles. 
+              One link to rule them all.
+            </p>
+          </div>
+        </div>
+
+        {/* About Section */}
+        <div className="bg-white rounded-3xl border border-blue-100 p-12 mb-20 shadow-sm">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl font-bold text-slate-800 mb-8">About Playd</h2>
+            <p className="text-lg text-slate-600 leading-relaxed mb-8">
+              Playd was created for the modern digital generation - gamers, Discord users, and music lovers 
+              who want to showcase their personality online. Whether you're streaming on Twitch, competing 
+              in esports, or just want to share your incredible music taste, Playd gives you the tools to 
+              create a stunning, personalized profile that truly represents you.
+            </p>
+            <p className="text-lg text-slate-600 leading-relaxed">
+              With seamless integrations to Spotify, Last.fm, Discord, and major gaming platforms, 
+              plus powerful customization options, your Playd profile becomes your digital identity card 
+              for the gaming and music communities.
             </p>
           </div>
         </div>
 
         {/* Contact Section */}
-        <div className="bg-black/30 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Connect With Us</h2>
-          <div className="flex justify-center gap-6">
+        <div className="bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl p-12 text-center text-white">
+          <h2 className="text-3xl font-bold mb-8">Get in Touch</h2>
+          <div className="flex justify-center gap-6 flex-wrap">
             <a
-              href="https://discord.gg/your-server"
+              href="https://discord.gg/playd"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-6 py-3 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-all duration-300 border border-purple-400/30 hover:border-purple-400/60 text-white"
+              className="flex items-center gap-3 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300 backdrop-blur-sm"
             >
-              <span className="text-xl">💬</span>
-              <span>Discord</span>
+              <Users className="w-5 h-5" />
+              <span>Join our Discord</span>
             </a>
             <a
-              href="https://twitter.com/your-handle"
+              href="https://twitter.com/playdapp"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-6 py-3 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-all duration-300 border border-purple-400/30 hover:border-purple-400/60 text-white"
+              className="flex items-center gap-3 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300 backdrop-blur-sm"
             >
-              <span className="text-xl">🐦</span>
-              <span>Twitter</span>
+              <Twitter className="w-5 h-5" />
+              <span>Follow on Twitter</span>
             </a>
             <a
-              href="mailto:contact@tapyn.com"
-              className="flex items-center gap-3 px-6 py-3 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-all duration-300 border border-purple-400/30 hover:border-purple-400/60 text-white"
+              href="mailto:hello@playd.io"
+              className="flex items-center gap-3 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300 backdrop-blur-sm"
             >
-              <span className="text-xl">📧</span>
-              <span>Email</span>
+              <Mail className="w-5 h-5" />
+              <span>Email Us</span>
             </a>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-800 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between flex-wrap gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-600 rounded-lg flex items-center justify-center">
+                <Music className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold">Playd</span>
+            </div>
+            
+            <div className="flex items-center gap-6">
+              <a
+                href="https://discord.gg/playd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                <Users className="w-5 h-5" />
+              </a>
+              <a
+                href="https://twitter.com/playdapp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a
+                href="mailto:hello@playd.io"
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                <Mail className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+            <p>&copy; 2024 Playd. All rights reserved. Built for gamers, by gamers.</p>
+          </div>
+        </div>
+      </footer>
 
       <AuthModal 
         isOpen={authModalOpen}
