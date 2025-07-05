@@ -9,6 +9,9 @@ import { BadgesSection } from '@/components/sections/BadgesSection';
 import { FontsSection } from '@/components/sections/FontsSection';
 import { SpecialEffectsSection } from '@/components/sections/SpecialEffectsSection';
 import { SocialLinksSection } from '@/components/sections/SocialLinksSection';
+import { MusicStatsSection } from '@/components/sections/MusicStatsSection';
+import { PlaylistSection } from '@/components/sections/PlaylistSection';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useToast } from '@/hooks/use-toast';
@@ -30,6 +33,19 @@ export interface ProfileData {
     url: string;
     label: string;
   }>;
+  musicStats: {
+    topArtists: Array<{ name: string; plays: number; image?: string }>;
+    topTracks: Array<{ name: string; artist: string; plays: number; image?: string }>;
+    topGenres: Array<{ name: string; percentage: number }>;
+    currentlyPlaying?: { name: string; artist: string; image?: string };
+  };
+  playlists: Array<{
+    id: string;
+    name: string;
+    description: string;
+    tracks: Array<{ name: string; artist: string; duration: string }>;
+    coverImage?: string;
+  }>;
 }
 
 const Index = () => {
@@ -42,7 +58,13 @@ const Index = () => {
     badges: [],
     fontStyle: 'modern',
     specialEffects: [],
-    socialLinks: []
+    socialLinks: [],
+    musicStats: {
+      topArtists: [],
+      topTracks: [],
+      topGenres: [],
+    },
+    playlists: []
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -61,7 +83,13 @@ const Index = () => {
         badges: profile.badges || [],
         fontStyle: profile.font_style || 'modern',
         specialEffects: profile.special_effects || [],
-        socialLinks: profile.social_links || []
+        socialLinks: profile.social_links || [],
+        musicStats: profile.music_stats || {
+          topArtists: [],
+          topTracks: [],
+          topGenres: [],
+        },
+        playlists: profile.playlists || []
       });
     }
   }, [profile]);
@@ -80,6 +108,8 @@ const Index = () => {
     if (updates.fontStyle !== undefined) dbUpdates.font_style = updates.fontStyle;
     if (updates.specialEffects !== undefined) dbUpdates.special_effects = updates.specialEffects;
     if (updates.socialLinks !== undefined) dbUpdates.social_links = updates.socialLinks;
+    if (updates.musicStats !== undefined) dbUpdates.music_stats = updates.musicStats;
+    if (updates.playlists !== undefined) dbUpdates.playlists = updates.playlists;
 
     if (Object.keys(dbUpdates).length > 0) {
       await updateProfile(dbUpdates);
@@ -108,7 +138,9 @@ const Index = () => {
         badges: profileData.badges,
         font_style: profileData.fontStyle,
         special_effects: profileData.specialEffects,
-        social_links: profileData.socialLinks
+        social_links: profileData.socialLinks,
+        music_stats: profileData.musicStats,
+        playlists: profileData.playlists
       };
 
       await updateProfile(dbUpdates);
@@ -125,7 +157,7 @@ const Index = () => {
               href={profileUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-sky-500 hover:text-sky-400 underline flex items-center gap-1"
+              className="text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
             >
               {profileUrl}
               <ExternalLink className="w-3 h-3" />
@@ -178,6 +210,10 @@ const Index = () => {
         return <SpecialEffectsSection profileData={profileData} updateProfileData={updateProfileData} />;
       case 'social-links':
         return <SocialLinksSection profileData={profileData} updateProfileData={updateProfileData} />;
+      case 'music-stats':
+        return <MusicStatsSection profileData={profileData} updateProfileData={updateProfileData} />;
+      case 'playlists':
+        return <PlaylistSection profileData={profileData} updateProfileData={updateProfileData} />;
       default:
         return <ProfilePictureSection profileData={profileData} updateProfileData={updateProfileData} />;
     }
@@ -185,15 +221,15 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-100 to-black/20 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-black rounded-full flex items-center justify-center mx-auto mb-6">
             <Music className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Welcome to Playd</h1>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent mb-4">Welcome to Playd</h1>
           <p className="text-slate-600 mb-8">Please sign in to create your gaming and music profile</p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-full px-6">
+            <Button className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-full px-6">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go to Home
             </Button>
@@ -204,15 +240,17 @@ const Index = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex font-${profileData.fontStyle}`}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-100 to-black/30 relative overflow-hidden">
+      <InteractiveBackground />
+      
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-b border-blue-100 z-50 h-16">
+      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-blue-100/90 to-slate-200/90 backdrop-blur-sm border-b border-blue-200/50 z-50 h-16">
         <div className="flex items-center justify-between px-6 h-full">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-black rounded-lg flex items-center justify-center">
               <Music className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-sky-600 to-blue-700 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent">
               Playd
             </span>
           </Link>
@@ -225,7 +263,7 @@ const Index = () => {
                   href={`https://playd.io/${profile.username}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sky-600 font-medium hover:text-sky-700 transition-colors flex items-center gap-1"
+                  className="text-blue-600 font-medium hover:text-blue-700 transition-colors flex items-center gap-1"
                 >
                   playd.io/{profile.username}
                   <ExternalLink className="w-3 h-3" />
@@ -242,7 +280,7 @@ const Index = () => {
                 onClick={handleSignOut}
                 variant="outline"
                 size="sm"
-                className="border-slate-200 text-slate-600 hover:bg-slate-50"
+                className="border-blue-200 text-slate-600 hover:bg-blue-50"
               >
                 <LogOut className="w-4 h-4" />
               </Button>
@@ -257,9 +295,9 @@ const Index = () => {
         {/* Main Content Area */}
         <div className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl border border-blue-100 p-8 shadow-sm">
+            <div className="bg-gradient-to-br from-white/90 to-blue-50/90 backdrop-blur-lg rounded-2xl border border-blue-200/50 p-8 shadow-xl">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-800 mb-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent mb-2">
                   Customize Your Profile
                 </h1>
                 <p className="text-slate-600">
@@ -270,11 +308,11 @@ const Index = () => {
               {renderSection()}
 
               {/* Save & Publish Button */}
-              <div className="mt-8 pt-6 border-t border-blue-100 flex justify-center">
+              <div className="mt-8 pt-6 border-t border-blue-200/50 flex justify-center">
                 <Button
                   onClick={handleSaveAndPublish}
                   disabled={isSaving}
-                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
+                  className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
                 >
                   {isSaving ? (
                     <>
@@ -294,7 +332,7 @@ const Index = () => {
         </div>
 
         {/* Preview Area */}
-        <div className="w-80 p-6 border-l border-blue-100 bg-white/50">
+        <div className="w-80 p-6 border-l border-blue-200/50 bg-gradient-to-b from-white/30 to-blue-50/30 backdrop-blur-sm">
           <ProfilePreview profileData={profileData} />
         </div>
       </div>
