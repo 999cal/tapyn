@@ -13,10 +13,12 @@ export interface Profile {
   background_video_url?: string;
   background_music_url?: string;
   profile_effect?: string;
-  badges?: any; // Changed from string[] to any to match Json type
+  badges?: any;
   font_style?: string;
-  special_effects?: any; // Changed from string[] to any to match Json type
-  social_links?: any; // Changed to any to match Json type
+  special_effects?: any;
+  social_links?: any;
+  music_stats?: any;
+  playlists?: any;
 }
 
 export const useProfile = () => {

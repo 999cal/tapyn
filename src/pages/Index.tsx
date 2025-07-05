@@ -221,13 +221,13 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-100 to-black/20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-blue-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-black rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
             <Music className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent mb-4">Welcome to Playd</h1>
-          <p className="text-slate-600 mb-8">Please sign in to create your gaming and music profile</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-4">Welcome to Playd</h1>
+          <p className="text-slate-400 mb-8">Please sign in to create your gaming and music profile</p>
           <Link to="/">
             <Button className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-full px-6">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -240,17 +240,17 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-100 to-black/30 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-blue-900 relative overflow-hidden">
       <InteractiveBackground />
       
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-blue-100/90 to-slate-200/90 backdrop-blur-sm border-b border-blue-200/50 z-50 h-16">
+      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-black/90 to-slate-900/90 backdrop-blur-sm border-b border-blue-500/30 z-50 h-16">
         <div className="flex items-center justify-between px-6 h-full">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-black rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
               <Music className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
               Playd
             </span>
           </Link>
@@ -258,12 +258,12 @@ const Index = () => {
           <div className="flex items-center gap-4">
             {profile?.username && (
               <div className="text-right">
-                <p className="text-slate-600 text-sm">Your profile:</p>
+                <p className="text-slate-400 text-sm">Your profile:</p>
                 <a 
                   href={`https://playd.io/${profile.username}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 font-medium hover:text-blue-700 transition-colors flex items-center gap-1"
+                  className="text-blue-400 font-medium hover:text-blue-300 transition-colors flex items-center gap-1"
                 >
                   playd.io/{profile.username}
                   <ExternalLink className="w-3 h-3" />
@@ -272,7 +272,7 @@ const Index = () => {
             )}
             
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 text-slate-600">
+              <div className="flex items-center gap-2 text-slate-400">
                 <User className="w-4 h-4" />
                 <span className="text-sm">{user.email}</span>
               </div>
@@ -280,7 +280,7 @@ const Index = () => {
                 onClick={handleSignOut}
                 variant="outline"
                 size="sm"
-                className="border-blue-200 text-slate-600 hover:bg-blue-50"
+                className="border-blue-500/30 text-slate-400 hover:bg-blue-900/30"
               >
                 <LogOut className="w-4 h-4" />
               </Button>
@@ -295,12 +295,12 @@ const Index = () => {
         {/* Main Content Area */}
         <div className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-white/90 to-blue-50/90 backdrop-blur-lg rounded-2xl border border-blue-200/50 p-8 shadow-xl">
+            <div className="bg-gradient-to-br from-slate-900/90 to-black/90 backdrop-blur-lg rounded-2xl border border-blue-500/30 p-8 shadow-xl">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent mb-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-2">
                   Customize Your Profile
                 </h1>
-                <p className="text-slate-600">
+                <p className="text-slate-400">
                   Create your perfect gaming and music profile
                 </p>
               </div>
@@ -308,7 +308,7 @@ const Index = () => {
               {renderSection()}
 
               {/* Save & Publish Button */}
-              <div className="mt-8 pt-6 border-t border-blue-200/50 flex justify-center">
+              <div className="mt-8 pt-6 border-t border-blue-500/30 flex justify-center">
                 <Button
                   onClick={handleSaveAndPublish}
                   disabled={isSaving}
@@ -332,7 +332,7 @@ const Index = () => {
         </div>
 
         {/* Preview Area */}
-        <div className="w-80 p-6 border-l border-blue-200/50 bg-gradient-to-b from-white/30 to-blue-50/30 backdrop-blur-sm">
+        <div className="w-80 p-6 border-l border-blue-500/30 bg-gradient-to-b from-slate-900/30 to-black/30 backdrop-blur-sm">
           <ProfilePreview profileData={profileData} />
         </div>
       </div>

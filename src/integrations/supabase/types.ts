@@ -20,6 +20,8 @@ export type Database = {
           font_style: string | null
           id: string
           links: Json | null
+          music_stats: Json | null
+          playlists: Json | null
           profile_effect: string | null
           profile_picture_url: string | null
           social_links: Json | null
@@ -37,6 +39,8 @@ export type Database = {
           font_style?: string | null
           id: string
           links?: Json | null
+          music_stats?: Json | null
+          playlists?: Json | null
           profile_effect?: string | null
           profile_picture_url?: string | null
           social_links?: Json | null
@@ -54,6 +58,8 @@ export type Database = {
           font_style?: string | null
           id?: string
           links?: Json | null
+          music_stats?: Json | null
+          playlists?: Json | null
           profile_effect?: string | null
           profile_picture_url?: string | null
           social_links?: Json | null

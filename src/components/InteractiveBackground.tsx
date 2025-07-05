@@ -36,7 +36,7 @@ export const InteractiveBackground = () => {
           speedX: (Math.random() - 0.5) * 0.5,
           speedY: (Math.random() - 0.5) * 0.5,
           opacity: Math.random() * 0.5 + 0.2,
-          color: Math.random() > 0.5 ? '#3b82f6' : '#1e293b'
+          color: Math.random() > 0.5 ? '#3b82f6' : '#1e40af'
         });
       }
     };
@@ -51,7 +51,7 @@ export const InteractiveBackground = () => {
       // Draw gradient background
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
       gradient.addColorStop(0, 'rgba(59, 130, 246, 0.1)');
-      gradient.addColorStop(1, 'rgba(30, 41, 59, 0.1)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 

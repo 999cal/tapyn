@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { ProfileData } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
@@ -58,21 +59,21 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-black rounded-lg flex items-center justify-center">
+        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
           <ListMusic className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Music Playlists
           </h2>
-          <p className="text-slate-600">Create and showcase your favorite playlists</p>
+          <p className="text-slate-400">Create and showcase your favorite playlists</p>
         </div>
       </div>
 
       {/* Create New Playlist */}
-      <Card className="border-blue-200/50 bg-gradient-to-br from-white/80 to-blue-50/80">
+      <Card className="border-blue-500/30 bg-gradient-to-br from-slate-900/80 to-black/80">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-700">
+          <CardTitle className="flex items-center gap-2 text-blue-400">
             <Plus className="w-5 h-5" />
             Create New Playlist
           </CardTitle>
@@ -80,31 +81,31 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-slate-700">Playlist Name</Label>
+              <Label className="text-slate-300">Playlist Name</Label>
               <Input
                 value={newPlaylist.name}
                 onChange={(e) => setNewPlaylist(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="Enter playlist name"
-                className="border-blue-200 focus:border-blue-400"
+                className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
               />
             </div>
             <div>
-              <Label className="text-slate-700">Cover Image URL</Label>
+              <Label className="text-slate-300">Cover Image URL</Label>
               <Input
                 value={newPlaylist.coverImage}
                 onChange={(e) => setNewPlaylist(prev => ({ ...prev, coverImage: e.target.value }))}
                 placeholder="Enter cover image URL"
-                className="border-blue-200 focus:border-blue-400"
+                className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
               />
             </div>
           </div>
           <div>
-            <Label className="text-slate-700">Description</Label>
+            <Label className="text-slate-300">Description</Label>
             <Textarea
               value={newPlaylist.description}
               onChange={(e) => setNewPlaylist(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Describe your playlist"
-              className="border-blue-200 focus:border-blue-400"
+              className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
             />
           </div>
           <Button 
@@ -120,7 +121,7 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
       {/* Existing Playlists */}
       <div className="space-y-6">
         {profileData.playlists.map((playlist, playlistIndex) => (
-          <Card key={playlist.id} className="border-blue-200/50 bg-gradient-to-br from-white/80 to-blue-50/80">
+          <Card key={playlist.id} className="border-blue-500/30 bg-gradient-to-br from-slate-900/80 to-black/80">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -128,8 +129,8 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
                     <img src={playlist.coverImage} alt={playlist.name} className="w-12 h-12 rounded object-cover" />
                   )}
                   <div>
-                    <CardTitle className="text-blue-700">{playlist.name}</CardTitle>
-                    <p className="text-sm text-slate-600">{playlist.description}</p>
+                    <CardTitle className="text-blue-400">{playlist.name}</CardTitle>
+                    <p className="text-sm text-slate-400">{playlist.description}</p>
                     <p className="text-xs text-slate-500">{playlist.tracks.length} tracks</p>
                   </div>
                 </div>
@@ -138,7 +139,7 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
                     variant="ghost"
                     size="sm"
                     onClick={() => setEditingPlaylist(editingPlaylist === playlistIndex ? null : playlistIndex)}
-                    className="text-blue-600 hover:bg-blue-50"
+                    className="text-blue-400 hover:bg-blue-900/20"
                   >
                     {editingPlaylist === playlistIndex ? 'Done' : 'Edit'}
                   </Button>
@@ -146,7 +147,7 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
                     variant="ghost"
                     size="sm"
                     onClick={() => removePlaylist(playlistIndex)}
-                    className="text-red-500 hover:bg-red-50"
+                    className="text-red-400 hover:bg-red-900/20"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -156,26 +157,26 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
 
             <CardContent>
               {editingPlaylist === playlistIndex && (
-                <div className="space-y-4 mb-4 p-4 bg-blue-50/50 rounded-lg border border-blue-200/50">
-                  <h4 className="font-medium text-slate-700">Add Track</h4>
+                <div className="space-y-4 mb-4 p-4 bg-blue-900/20 rounded-lg border border-blue-500/30">
+                  <h4 className="font-medium text-slate-300">Add Track</h4>
                   <div className="grid grid-cols-3 gap-3">
                     <Input
                       value={newTrack.name}
                       onChange={(e) => setNewTrack(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Track name"
-                      className="border-blue-200 focus:border-blue-400"
+                      className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
                     />
                     <Input
                       value={newTrack.artist}
                       onChange={(e) => setNewTrack(prev => ({ ...prev, artist: e.target.value }))}
                       placeholder="Artist name"
-                      className="border-blue-200 focus:border-blue-400"
+                      className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
                     />
                     <Input
                       value={newTrack.duration}
                       onChange={(e) => setNewTrack(prev => ({ ...prev, duration: e.target.value }))}
                       placeholder="Duration (e.g., 3:45)"
-                      className="border-blue-200 focus:border-blue-400"
+                      className="border-blue-500/30 focus:border-blue-400 bg-slate-800/50 text-slate-200"
                     />
                   </div>
                   <Button 
@@ -191,16 +192,16 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
 
               <div className="space-y-2">
                 {playlist.tracks.map((track, trackIndex) => (
-                  <div key={trackIndex} className="flex items-center justify-between p-3 bg-slate-50/50 rounded-lg border border-slate-200/50">
+                  <div key={trackIndex} className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg border border-slate-700/50">
                     <div className="flex items-center gap-3">
-                      <Music className="w-4 h-4 text-blue-500" />
+                      <Music className="w-4 h-4 text-blue-400" />
                       <div>
-                        <p className="font-medium text-slate-800">{track.name}</p>
-                        <p className="text-sm text-slate-600">{track.artist}</p>
+                        <p className="font-medium text-blue-100">{track.name}</p>
+                        <p className="text-sm text-slate-400">{track.artist}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1 text-xs text-slate-500">
+                      <div className="flex items-center gap-1 text-xs text-slate-400">
                         <Clock className="w-3 h-3" />
                         {track.duration}
                       </div>
@@ -209,7 +210,7 @@ export const PlaylistSection = ({ profileData, updateProfileData }: PlaylistSect
                           variant="ghost"
                           size="sm"
                           onClick={() => removeTrackFromPlaylist(playlistIndex, trackIndex)}
-                          className="text-red-500 hover:bg-red-50"
+                          className="text-red-400 hover:bg-red-900/20"
                         >
                           <Trash2 className="w-3 h-3" />
                         </Button>
